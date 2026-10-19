@@ -1,0 +1,122 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    function isValidStudentCode(code) {
+      return code is string && code.size() >= 3 && code.size() <= 32;
+    }
+
+    // Validation for student submission
+    function isValidSubmission(data) {
+      return data.keys().hasAll(['assignmentId', 'studentCode', 'studentName', 'receiptCode', 'submittedAt', 'status'])
+        && data.assignmentId is string && data.assignmentId.size() <= 128
+        && data.studentCode is string && data.studentCode.size() <= 32
+        && data.studentName is string && data.studentName.size() <= 120
+        && data.receiptCode is string && data.receiptCode.size() <= 64
+        && data.submittedAt is string && data.submittedAt.size() <= 64
+        && data.status in ['on_time', 'late', 'missing', 'sick', 'excused'];
+    }
+
+    // Instructors collection
+    match /instructors/{instructorId} {
+      allow read, write: if isSignedIn() && request.auth.uid == instructorId;
+    }
+
+    // Courses collection
+    match /courses/{courseId} {
+      allow read: if isSignedIn() && (resource == null || resource.data.instructorId == request.auth.uid);
+      allow create: if isSignedIn() && incoming().instructorId == request.auth.uid;
+      allow update, delete: if isSignedIn() && existing().instructorId == request.auth.uid;
+
+      // Nested student roster inside course
+      match /students/{studentId} {
+        allow read, write: if isSignedIn() && get(/databases/$(database)/documents/courses/$(courseId)).data.instructorId == request.auth.uid;
+      }
+    }
+
+    // Assignments collection
+    match /assignments/{assignmentId} {
+      // Students can fetch specific assignment details using assignmentId
+      allow get: if true;
+      allow list: if isSignedIn() && (resource == null || resource.data.instructorId == request.auth.uid);
+      allow create: if isSignedIn() && incoming().instructorId == request.auth.uid;
+      allow update, delete: if isSignedIn() && existing().instructorId == request.auth.uid;
+
+      // Assignment specific roster lookup
+      // Note: Students can ONLY get by exact studentCode, CANNOT list all students (protecting privacy)
+      match /roster/{studentCode} {
+        allow get: if true;
+        allow list: if isSignedIn() && get(/databases/$(database)/documents/assignments/$(assignmentId)).data.instructorId == request.auth.uid;
+        allow write: if isSignedIn() && get(/databases/$(database)/documents/assignments/$(assignmentId)).data.instructorId == request.auth.uid;
+      }
+
+      // Submissions subcollection
+      match /submissions/{submissionId} {
+        // Anyone can get their submission receipt by ID
+        allow get: if true;
+        // Only the instructor can list all student submissions
+        allow list: if isSignedIn() && get(/databases/$(database)/documents/assignments/$(assignmentId)).data.instructorId == request.auth.uid;
+
+        // Student creates submission without login
+        allow create: if isValidSubmission(incoming())
+          && (!('score' in incoming()) || incoming().score == null)
+          && (!('feedback' in incoming()) || incoming().feedback == null || incoming().feedback == '');
+
+        // Updates: Instructor can update anytime (grade, manual override, feedback).
+        // Student can update (resubmit) without login
+        allow update: if (isSignedIn() && get(/databases/$(database)/documents/assignments/$(assignmentId)).data.instructorId == request.auth.uid)
+          || (
+            isValidSubmission(incoming())
+            && incoming().studentCode == existing().studentCode
+            // Student cannot set new score if none existed, and cannot alter existing instructor score
+            && (
+              !('score' in incoming())
+              || incoming().score == null
+              || (!('score' in existing()) && incoming().score == null)
+              || (('score' in existing()) && incoming().score == existing().score)
+            )
+            // Student cannot modify instructor feedback
+            && (
+              !('feedback' in incoming())
+              || incoming().feedback == null
+              || incoming().feedback == ''
+              || (!('feedback' in existing()) && incoming().feedback == '')
+              || (('feedback' in existing()) && incoming().feedback == existing().feedback)
+            )
+          );
+
+        // Only instructor can delete submission
+        allow delete: if isSignedIn() && get(/databases/$(database)/documents/assignments/$(assignmentId)).data.instructorId == request.auth.uid;
+      }
+    }
+
+    // 6-digit assignment code lookup table
+    match /assignment_codes/{code} {
+      allow get: if true;
+      allow list: if isSignedIn();
+      allow create, update, delete: if isSignedIn();
+    }
+  }
+}

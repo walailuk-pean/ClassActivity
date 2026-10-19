@@ -1,0 +1,8 @@
+{
+  "name": "ClassSubmit - ระบบส่งงานในชั้นเรียน",
+  "description": "ระบบส่งงานในชั้นเรียนสำหรับนักศึกษาและอาจารย์ ส่งงานง่ายไม่ต้องล็อกอินอีเมล จัดการรายวิชาและตรวจเช็คงานแบบเรียลไทม์",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" width="280" height="80" fill="none">
+  <!-- Bangkok University Business Administration Official Emblem (White/Light for Dark Backgrounds) -->
+  <defs>
+    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Diamond Logo Mark (Left) -->
+  <g transform="translate(8, 16) scale(1.6)" filter="url(#subtleGlow)">
+    <path d="M43.1596 8.57204L35.7342 0.941406H7.40707L0 8.57204L21.5175 31.0205L43.1596 8.57204Z" fill="#C8CDCF"/>
+    <path d="M0.875948 8.5867L7.95683 1.46185H35.3311L42.4156 8.5867H0.875948Z" fill="#E2E8F0"/>
+    <path d="M35.3311 1.46184L35.7342 0.941406L43.1596 8.57204H42.0748L35.3311 1.46184Z" fill="#FFFFFF"/>
+    <path d="M42.0748 8.57204L7.95682 1.46185H35.3311L42.0748 8.57204Z" fill="#CBD5E1"/>
+    <path d="M0.875948 8.64168L21.3782 28.8068L42.4156 8.5867L0.875948 8.64168Z" fill="#E2E8F0"/>
+    <path d="M43.1596 8.57204H42.0748L19.8462 26.5711L20.6599 28.7995L21.5175 31.0205L43.1596 8.57204Z" fill="#FFFFFF"/>
+    <path d="M42.0748 8.57204L38.0249 11.8449C38.0249 11.8449 27.0884 11.8449 20.9531 13.3256C14.8801 14.7916 10.2182 17.841 10.2182 17.841L0.817307 8.5867L42.0748 8.57204Z" fill="#CBD5E1"/>
+    <path d="M21.1987 29.8183L21.5175 31.0205L43.1596 8.57204L21.1987 29.8183Z" fill="#94A3B8"/>
+    <path d="M29.401 18.9588L13.9089 10.958L21.5175 31.0205L12.4978 10.958L9.92129 13.8607L11.3433 10.0784L0.120947 8.57937H11.1454L8.51391 3.03782L12.2523 7.61546L17.2844 1.23461L13.9235 7.52384L24.4202 1.98595L14.9314 8.57937H42.7528L14.9314 9.92811L29.401 18.9588Z" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Divider Line -->
+  <line x1="86" y1="18" x2="86" y2="62" stroke="rgba(255, 255, 255, 0.35)" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Typography -->
+  <text x="96" y="32" font-family="'Prompt', 'Montserrat', 'Helvetica Neue', sans-serif" font-weight="800" font-size="17" fill="#ffffff" letter-spacing="0.5">
+    BANGKOK UNIVERSITY
+  </text>
+  <text x="96" y="49" font-family="'Prompt', 'Montserrat', 'Helvetica Neue', sans-serif" font-weight="700" font-size="13" fill="#fca5a5" letter-spacing="1">
+    BUSINESS ADMINISTRATION
+  </text>
+  <text x="96" y="63" font-family="'Prompt', 'Sarabun', sans-serif" font-weight="500" font-size="11" fill="#e0e7ff">
+    คณะบริหารธุรกิจ มหาวิทยาลัยกรุงเทพ
+  </text>
+</svg>

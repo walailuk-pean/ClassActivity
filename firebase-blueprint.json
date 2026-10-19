@@ -1,0 +1,154 @@
+{
+  "entities": {
+    "Instructor": {
+      "title": "Instructor",
+      "description": "Instructor user profile and settings",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "gasWebAppUrl": { "type": "string" },
+        "allowedDomains": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Course": {
+      "title": "Course",
+      "description": "Course information created by instructor",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "sections": { "type": "string" },
+        "academicYear": { "type": "string" },
+        "semester": { "type": "string" },
+        "instructorId": { "type": "string" },
+        "instructorEmail": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["code", "name", "instructorId"]
+    },
+    "Student": {
+      "title": "Student",
+      "description": "Enrolled student roster entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "no": { "type": "string" },
+        "studentCode": { "type": "string" },
+        "name": { "type": "string" },
+        "sec": { "type": "string" },
+        "email": { "type": "string" },
+        "courseId": { "type": "string" },
+        "instructorId": { "type": "string" }
+      },
+      "required": ["studentCode", "name", "sec"]
+    },
+    "Assignment": {
+      "title": "Assignment",
+      "description": "Classroom assignment specification",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "courseId": { "type": "string" },
+        "courseCode": { "type": "string" },
+        "courseName": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "code": { "type": "string" },
+        "sections": { "type": "string" },
+        "allowedTypes": { "type": "string" },
+        "maxFileSizeMB": { "type": "number" },
+        "openAt": { "type": "string" },
+        "closeAt": { "type": "string" },
+        "allowLate": { "type": "boolean" },
+        "allowResubmit": { "type": "boolean" },
+        "worksheetUrl": { "type": "string" },
+        "worksheetName": { "type": "string" },
+        "status": { "type": "string", "enum": ["open", "closed", "scheduled"] },
+        "instructorId": { "type": "string" },
+        "instructorEmail": { "type": "string" },
+        "gasWebAppUrl": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["title", "code", "courseId", "instructorId", "openAt", "closeAt"]
+    },
+    "Submission": {
+      "title": "Submission",
+      "description": "Student assignment submission record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "assignmentId": { "type": "string" },
+        "studentCode": { "type": "string" },
+        "studentName": { "type": "string" },
+        "studentNo": { "type": "string" },
+        "sec": { "type": "string" },
+        "receiptCode": { "type": "string" },
+        "fileUrl": { "type": "string" },
+        "fileName": { "type": "string" },
+        "fileSize": { "type": "number" },
+        "fileType": { "type": "string" },
+        "linkUrl": { "type": "string" },
+        "submittedAt": { "type": "string" },
+        "status": { "type": "string", "enum": ["on_time", "late", "missing", "sick", "excused"] },
+        "score": { "type": "number" },
+        "feedback": { "type": "string" },
+        "instructorNotes": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["assignmentId", "studentCode", "studentName", "receiptCode", "submittedAt", "status"]
+    },
+    "AssignmentCodeMap": {
+      "title": "AssignmentCodeMap",
+      "description": "Public lookup entry for 6-digit assignment code",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string" },
+        "assignmentId": { "type": "string" },
+        "courseId": { "type": "string" },
+        "title": { "type": "string" },
+        "instructorId": { "type": "string" },
+        "openAt": { "type": "string" },
+        "closeAt": { "type": "string" },
+        "allowLate": { "type": "boolean" },
+        "status": { "type": "string" }
+      },
+      "required": ["code", "assignmentId", "title"]
+    }
+  },
+  "firestore": {
+    "/instructors/{instructorId}": {
+      "schema": "Instructor",
+      "description": "Profile and Google Apps Script config for instructors"
+    },
+    "/courses/{courseId}": {
+      "schema": "Course",
+      "description": "Courses managed by instructors"
+    },
+    "/courses/{courseId}/students/{studentId}": {
+      "schema": "Student",
+      "description": "Enrolled student rosters per course"
+    },
+    "/assignments/{assignmentId}": {
+      "schema": "Assignment",
+      "description": "Assignment definitions and schedule"
+    },
+    "/assignments/{assignmentId}/roster/{studentCode}": {
+      "schema": "Student",
+      "description": "Single-student verification record for assignment"
+    },
+    "/assignments/{assignmentId}/submissions/{submissionId}": {
+      "schema": "Submission",
+      "description": "Student work submissions and instructor grading"
+    },
+    "/assignment_codes/{code}": {
+      "schema": "AssignmentCodeMap",
+      "description": "6-digit code directory to resolve assignment details"
+    }
+  }
+}
